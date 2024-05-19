@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      effect:
+        specifier: ^3.1.5
+        version: 3.1.5
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -636,6 +639,9 @@ packages:
   doctrine@3.0.0:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
     engines: {node: '>=6.0.0'}
+
+  effect@3.1.5:
+    resolution: {integrity: sha512-nTkW/ViRF8cXVMKjusYMVp7L1eqLwMZV7K6GHoqq3MD7NjPT/tJRVhY8d6z5Vam9kxgvRAzqwJKkaRpRVz1jTw==}
 
   electron-to-chromium@1.4.774:
     resolution: {integrity: sha512-132O1XCd7zcTkzS3FgkAzKmnBuNJjK8WjcTtNuoylj7MYbqw5eXehjQ5OK91g0zm7OTKIPeaAG4CPoRfD9M1Mg==}
@@ -1673,6 +1679,8 @@ snapshots:
   doctrine@3.0.0:
     dependencies:
       esutils: 2.0.3
+
+  effect@3.1.5: {}
 
   electron-to-chromium@1.4.774: {}
 
