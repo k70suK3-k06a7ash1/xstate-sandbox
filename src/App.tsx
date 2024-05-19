@@ -4,12 +4,14 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import { Audio } from "@/components/Audio";
 import { audioActor } from "./stateActors/audioActor";
+import { useActor } from "@xstate/react";
 function App() {
   const [count, setCount] = useState(0);
+  // const [a] = useActor(audioActor)
 
-  audioActor.subscribe((snapshot) => {
-    console.log(snapshot);
-  });
+  // audioActor.subscribe((snapshot) => {
+  //   console.log(snapshot);
+  // });
   // const audioRef = useRef(new Audio("https://audio.transistor.fm/m/shows/40155/2658917e74139f25a86a88d346d71324.mp3"));
   // audioActor.send({type: "loading",params: })
 
