@@ -1,5 +1,5 @@
 import { Console, Data, Effect } from "effect";
-import { assign, setup } from "xstate";
+import { assign, createActor, createMachine, setup } from "xstate";
 export type MachineParams<A extends Record<string, Record<string, any>>> =
   keyof A extends infer Type
     ? Type extends keyof A
@@ -151,7 +151,7 @@ export const onError = ({ message }: { message: unknown }) =>
     console.error(`Error: ${JSON.stringify(message, null, 2)}`)
   );
 
-export const audioActor = setup({
+export const audioMachine = setup({
   types: {
     events: {} as Events,
     context: {} as Context,
@@ -278,3 +278,102 @@ export const audioActor = setup({
     },
   },
 });
+
+const audioLogic = createMachine({
+  context: {
+    audioContext: null,
+    trackSource: null,
+    audioRef: null,
+    currentTime: 0,
+  },
+  id: "Audio Player",
+  initial: "Init",
+  states: {
+    Init: {
+      on: {
+        loading: {
+          target: "Loading",
+          actions: {
+            type: "onLoad",
+            params: ({ event }) => ({ audioRef: event.params.audioRef }),
+          },
+        },
+        "init-error": {
+          target: "Error",
+          actions: {
+            type: "onError",
+            params: ({ event }) => ({ message: event.params.message }),
+          },
+        },
+      },
+    },
+    Loading: {
+      on: {
+        loaded: {
+          target: "Active",
+        },
+        error: {
+          target: "Error",
+          actions: {
+            type: "onError",
+            params: ({ event }) => ({ message: event.params.message }),
+          },
+        },
+      },
+    },
+    Active: {
+      initial: "Paused",
+      states: {
+        Paused: {
+          entry: {
+            type: "onPause",
+          },
+          on: {
+            play: {
+              target: "Playing",
+            },
+            restart: {
+              target: "Playing",
+              actions: {
+                type: "onRestart",
+              },
+            },
+          },
+        },
+        Playing: {
+          entry: {
+            type: "onPlay",
+          },
+          on: {
+            restart: {
+              target: "Playing",
+              actions: {
+                type: "onRestart",
+              },
+            },
+            end: {
+              target: "Paused",
+            },
+            pause: {
+              target: "Paused",
+            },
+            time: {
+              target: "Playing",
+              actions: {
+                type: "onUpdateTime",
+                params: ({ event }) => ({
+                  updatedTime: event.params.updatedTime,
+                }),
+              },
+            },
+          },
+        },
+      },
+    },
+    Error: {
+      type: "final",
+    },
+  },
+});
+
+export const audioActor = createActor(audioLogic);
