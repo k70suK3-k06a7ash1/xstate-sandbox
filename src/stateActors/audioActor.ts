@@ -151,7 +151,7 @@ export const onError = ({ message }: { message: unknown }) =>
     console.error(`Error: ${JSON.stringify(message, null, 2)}`)
   );
 
-export const machine = setup({
+export const audioActor = setup({
   types: {
     events: {} as Events,
     context: {} as Context,
