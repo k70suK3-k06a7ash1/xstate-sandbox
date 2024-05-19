@@ -3,8 +3,29 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import { Audio } from "@/components/Audio";
-// import { useActor } from "@xstate/react";
+import { useActor } from "@xstate/react";
 import { toggleActor } from "./stateActors/toggleActor";
+import { fromPromise } from "xstate";
+
+const promiseLogic = fromPromise(async () => {
+  const data = await fetch("https://syntax.fm/api/shows/latest");
+  const json = await data.json();
+  return json;
+});
+
+const ActorComponent = () => {
+  const [state, send] = useActor(promiseLogic);
+
+  if (state.status === "done") {
+    return <div>{JSON.stringify(state.output.id)}</div>;
+  }
+
+  if (state.status === "active") {
+    return <div>Loading...</div>;
+  }
+
+  return <></>;
+};
 function App() {
   const [count, setCount] = useState(0);
   // const [actor, set] = useActor(toggleActor);
@@ -12,6 +33,7 @@ function App() {
   return (
     <>
       <div>
+        <ActorComponent />
         <button onClick={() => toggleActor.send({ type: "TOGGLE" })}>
           toggle
         </button>
