@@ -16,14 +16,13 @@ const toggleMachine = createMachine({
 });
 
 // Machine instance with internal state
-const toggleActor = createActor(toggleMachine);
+export const toggleActor = createActor(toggleMachine);
 toggleActor.subscribe((state) => {
   console.log(state.value);
 });
 toggleActor.start();
-// => logs 'inactive'
 
-toggleActor.send({ type: "TOGGLE" });
-// => logs 'active'
+// toggleActor.send({ type: "TOGGLE" });
+// // => logs 'active'
 
-toggleActor.send({ type: "TOGGLE" });
+// toggleActor.send({ type: "TOGGLE" });
