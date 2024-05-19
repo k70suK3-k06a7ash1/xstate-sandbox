@@ -6,7 +6,7 @@
 import { createMachine, createActor } from "xstate";
 
 // State machine definition
-const toggleMachine = createMachine({
+export const toggleMachine = createMachine({
   id: "toggle",
   initial: "inactive",
   states: {

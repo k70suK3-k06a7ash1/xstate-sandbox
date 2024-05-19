@@ -4,7 +4,7 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import { Audio } from "@/components/Audio";
 import { useActor } from "@xstate/react";
-import { toggleActor } from "./stateActors/toggleActor";
+import { toggleActor, toggleMachine } from "./stateActors/toggleActor";
 import { fromPromise } from "xstate";
 
 const promiseLogic = fromPromise(async () => {
@@ -28,15 +28,24 @@ const ActorComponent = () => {
 };
 function App() {
   const [count, setCount] = useState(0);
-  // const [actor, set] = useActor(toggleActor);
+  const [actor, set] = useActor(toggleMachine, {
+    inspect: (inspectionEvent) => {
+      // type: '@xstate.actor' or
+      // type: '@xstate.snapshot' or
+      // type: '@xstate.event'
+      console.log({ inspectionEvent });
+    },
+  });
 
   return (
     <>
       <div>
         <ActorComponent />
-        <button onClick={() => toggleActor.send({ type: "TOGGLE" })}>
+        <>{actor.value}</>
+        <button onClick={() => set({ type: "TOGGLE" })}>toggle</button>
+        {/* <button onClick={() => toggleActor.send({ type: "TOGGLE" })}>
           toggle
-        </button>
+        </button> */}
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
         </a>
