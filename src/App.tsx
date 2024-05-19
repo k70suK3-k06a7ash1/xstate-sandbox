@@ -4,8 +4,9 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import { Audio } from "@/components/Audio";
 import { useActor } from "@xstate/react";
-import { toggleActor, toggleMachine } from "./stateActors/toggleActor";
+import { toggleMachine } from "./stateActors/toggleActor";
 import { fromPromise } from "xstate";
+import { countMachine } from "./stateActors/countActor";
 
 const promiseLogic = fromPromise(async () => {
   const data = await fetch("https://syntax.fm/api/shows/latest");
@@ -14,7 +15,7 @@ const promiseLogic = fromPromise(async () => {
 });
 
 const ActorComponent = () => {
-  const [state, send] = useActor(promiseLogic);
+  const [state, _send] = useActor(promiseLogic);
 
   if (state.status === "done") {
     return <div>{JSON.stringify(state.output.id)}</div>;
@@ -27,7 +28,15 @@ const ActorComponent = () => {
   return <></>;
 };
 function App() {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useActor(countMachine, {
+    inspect: (inspectionEvent) => {
+      // type: '@xstate.actor' or
+      // type: '@xstate.snapshot' or
+      // type: '@xstate.event'
+      console.log({ inspectionEvent });
+    },
+  });
+
   const [actor, set] = useActor(toggleMachine, {
     inspect: (inspectionEvent) => {
       // type: '@xstate.actor' or
@@ -55,8 +64,8 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+        <button onClick={() => setCount({ type: "INC" })}>
+          count is {count.context.count}
         </button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR

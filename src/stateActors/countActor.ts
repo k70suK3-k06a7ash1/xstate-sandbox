@@ -1,6 +1,6 @@
 import { createMachine, assign, createActor } from "xstate";
 
-const countMachine = createMachine({
+export const countMachine = createMachine({
   context: {
     count: 0,
   },
