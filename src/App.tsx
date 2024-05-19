@@ -1,10 +1,7 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import { Audio } from "@/components/Audio";
 import { useActor } from "@xstate/react";
-import { toggleMachine } from "./stateActors/toggleActor";
+import { toggleActor, toggleMachine } from "./stateActors/toggleActor";
 import { fromPromise } from "xstate";
 import { countMachine } from "./stateActors/countActor";
 
@@ -27,7 +24,8 @@ const ActorComponent = () => {
 
   return <></>;
 };
-function App() {
+
+const Counter = () => {
   const [count, setCount] = useActor(countMachine, {
     inspect: (inspectionEvent) => {
       // type: '@xstate.actor' or
@@ -36,7 +34,13 @@ function App() {
       console.log({ inspectionEvent });
     },
   });
-
+  return (
+    <button onClick={() => setCount({ type: "INC" })}>
+      count is {count.context.count}
+    </button>
+  );
+};
+function App() {
   const [actor, set] = useActor(toggleMachine, {
     inspect: (inspectionEvent) => {
       // type: '@xstate.actor' or
@@ -50,23 +54,15 @@ function App() {
     <>
       <div>
         <ActorComponent />
-        <>{actor.value}</>
-        <button onClick={() => set({ type: "TOGGLE" })}>toggle</button>
-        {/* <button onClick={() => toggleActor.send({ type: "TOGGLE" })}>
-          toggle
-        </button> */}
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <div>{actor.value.toString()}</div>
+        <button onClick={() => set({ type: "TOGGLE" })}>local toggle</button>
+        <button onClick={() => toggleActor.send({ type: "TOGGLE" })}>
+          global toggle
+        </button>
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount({ type: "INC" })}>
-          count is {count.context.count}
-        </button>
+        <Counter />
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
