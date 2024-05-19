@@ -21,8 +21,3 @@ toggleActor.subscribe((state) => {
   console.log(state.value);
 });
 toggleActor.start();
-
-// toggleActor.send({ type: "TOGGLE" });
-// // => logs 'active'
-
-// toggleActor.send({ type: "TOGGLE" });
